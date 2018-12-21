@@ -30,18 +30,18 @@ Add `ngTableToCsv` as a dependency to your module:
 angular.module('your_app', ['ngTableToCsv']);
 ```
 
-Add `export-csv` attribute directive on the `table` to define a new `csv` object on the scope with `generate()` and `link()` functions on them. 
+Add `export-csv` attribute directive on the `table` to define a new `csv` object on the scope with `generate()` and `link(fileName)` functions on them. 
 
 Options:
  - Use the `separator` attribute to change the default comma separator into something else (like semicolon).
  - Use the `export-csv-ignore` attribute to set the selector that will be used for prevent `tr`/`th`/`td` to be stringified.
 
-To create an `Export` button from an anchor tag, use the `generate()` and `link()` functions mentioned above from `ng-click` and `ng-href` attributes of an anchor tag.  
+To create an `Export` button from an anchor tag, use the `generate()` and `link(fileName)` functions mentioned above from `ng-click` and `ng-href` attributes of an anchor tag.  
 
 See below: 
 
 ```html
-      <a class="btn" title="Export Table" ng-click='csv.generate()' ng-href="{{ csv.link() }}"
+      <a class="btn" title="Export Table" ng-click='csv.generate()' ng-href="{{ csv.link(fileName) }}"
          download="myTable.csv">
         <i class="glyphicon glyphicon-new-window"></i> &#160;Export
       </a>
