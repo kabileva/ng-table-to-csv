@@ -11,7 +11,7 @@
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
     }])
     .value('ngTableToCsv.config', {
-      debug : true
+      debug: true
     });
 
   // Modules
@@ -28,23 +28,24 @@
   'use strict';
 
   angular.module('ngTableToCsv.directives')
-    .directive('exportCsv', ['$parse',
-      function ($parse) {
+    .directive('exportCsv', ['$parse', '$$log',
+      function ($parse, $$log) {
         return {
-          restrict : 'A',
-          scope    : false,
-          link     : function (scope, element, attrs) {
+          restrict: 'A',
+          scope: false,
+          link: function (scope, element, attrs) {
             var data = '';
             var separator = attrs.separator ? attrs.separator : ',';
             var ignoreSelector = attrs.exportCsvIgnore || '.ng-table-filters';
+            var isIEOrEdge = /msie\s|trident\/|edge\//i.test(window.navigator.userAgent);
             var csv = {
-              stringify : function (str) {
+              stringify: function (str) {
                 return '"' +
                   str.replace(/^\s\s*/, '').replace(/\s*\s$/, '') // trim spaces
                     .replace(/"/g, '""') + // replace quotes with double quotes
                   '"';
               },
-              generate  : function () {
+              generate: function () {
                 data = '';
                 var rows = element.find('tr');
                 angular.forEach(rows, function (row, i) {
@@ -69,7 +70,14 @@
                   data += rowData + '\n';
                 });
               },
-              link      : function () {
+              link: function (fileName) {
+                if (isIEOrEdge) {
+                  if (data) {
+                    var blobObject = new Blob([data]);
+                    window.navigator.msSaveOrOpenBlob(blobObject, fileName);
+                  }
+                  return;
+                }
                 return 'data:text/csv;charset=UTF-8,' + encodeURIComponent(data);
               }
             };
